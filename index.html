@@ -1,0 +1,1994 @@
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hospital Management System</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            margin: 0;
+            padding: 0;
+            background-color: #f5f5f5;
+            color: #333;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        
+        header {
+            background-color: #0077b6;
+            color: white;
+            padding: 20px 0;
+            text-align: center;
+            border-radius: 5px;
+            margin-bottom: 20px;
+        }
+        
+        h1 {
+            margin: 0;
+        }
+        
+        .tabs {
+            display: flex;
+            margin-bottom: 20px;
+            background-color: white;
+            border-radius: 5px;
+            overflow: hidden;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
+        
+        .tab {
+            padding: 15px 20px;
+            cursor: pointer;
+            background-color: #e9ecef;
+            border: none;
+            flex: 1;
+            text-align: center;
+            transition: all 0.3s;
+            font-size: 14px;
+        }
+        
+        .tab.active {
+            background-color: #0077b6;
+            color: white;
+            font-weight: bold;
+        }
+        
+        .tab:hover:not(.active) {
+            background-color: #ced4da;
+        }
+        
+        .tab-content {
+            display: none;
+            background-color: white;
+            padding: 20px;
+            border-radius: 5px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
+        
+        .tab-content.active {
+            display: block;
+        }
+        
+        .form-group {
+            margin-bottom: 15px;
+        }
+        
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+        
+        input, select, textarea {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 16px;
+        }
+        
+        button {
+            background-color: #0077b6;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+            transition: background-color 0.3s;
+        }
+        
+        button:hover {
+            background-color: #005f92;
+        }
+        
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+        
+        th, td {
+            padding: 12px 15px;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+        }
+        
+        th {
+            background-color: #0077b6;
+            color: white;
+        }
+        
+        tr:hover {
+            background-color: #f5f5f5;
+        }
+        
+        .action-btns button {
+            padding: 5px 10px;
+            margin-right: 5px;
+        }
+        
+        .delete-btn {
+            background-color: #dc3545;
+        }
+        
+        .delete-btn:hover {
+            background-color: #c82333;
+        }
+        
+        .edit-btn {
+            background-color: #ffc107;
+            color: #212529;
+        }
+        
+        .edit-btn:hover {
+            background-color: #e0a800;
+        }
+        
+        .search-container {
+            margin-bottom: 20px;
+        }
+        
+        .search-container input {
+            width: 300px;
+            display: inline-block;
+        }
+        
+        .search-container button {
+            display: inline-block;
+            margin-left: 10px;
+        }
+        
+        .alert {
+            padding: 15px;
+            margin-bottom: 20px;
+            border-radius: 4px;
+        }
+        
+        .alert-success {
+            background-color: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+        
+        .alert-error {
+            background-color: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+        
+        .stats-container {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 20px;
+        }
+        
+        .stat-card {
+            background-color: white;
+            padding: 20px;
+            border-radius: 5px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            flex: 1;
+            margin: 0 10px;
+            text-align: center;
+        }
+        
+        .stat-card h3 {
+            margin-top: 0;
+            color: #0077b6;
+        }
+        
+        .stat-value {
+            font-size: 24px;
+            font-weight: bold;
+            margin: 10px 0;
+        }
+
+        .notifications-panel {
+            background-color: white;
+            border-radius: 5px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            margin-bottom: 20px;
+            padding: 20px;
+        }
+
+        .notification-item {
+            padding: 10px;
+            margin-bottom: 10px;
+            border-radius: 4px;
+            border-left: 4px solid #dc3545;
+            background-color: #f8f9fa;
+        }
+
+        .notification-item.cancelled {
+            border-left-color: #dc3545;
+        }
+
+        .notification-item.new {
+            border-left-color: #28a745;
+        }
+
+        .availability-grid {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            gap: 10px;
+            margin-top: 15px;
+        }
+
+        .availability-day {
+            padding: 10px;
+            border: 2px solid #ddd;
+            border-radius: 4px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .availability-day.available {
+            background-color: #d4edda;
+            border-color: #28a745;
+        }
+
+        .availability-day.unavailable {
+            background-color: #f8d7da;
+            border-color: #dc3545;
+        }
+
+        .availability-day:hover {
+            opacity: 0.8;
+        }
+
+        .status-available {
+            color: #28a745;
+            font-weight: bold;
+        }
+
+        .status-unavailable {
+            color: #dc3545;
+            font-weight: bold;
+        }
+
+        .time-slots {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 5px;
+            margin-top: 10px;
+        }
+
+        .time-slot {
+            padding: 5px 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 12px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .time-slot.available {
+            background-color: #d4edda;
+            border-color: #28a745;
+        }
+
+        .time-slot.booked {
+            background-color: #f8d7da;
+            border-color: #dc3545;
+        }
+
+        .time-slot:hover {
+            opacity: 0.8;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>OPD Management System</h1>
+        </header>
+        
+        <!-- Notifications Panel -->
+        <div class="notifications-panel">
+            <h3>Dashboard Notifications</h3>
+            <div id="notificationsContainer">
+                <!-- Notifications will be populated here -->
+            </div>
+        </div>
+
+        <div class="stats-container">
+            <div class="stat-card">
+                <h3>Total Patients</h3>
+                <div class="stat-value" id="totalPatients">0</div>
+            </div>
+            <div class="stat-card">
+                <h3>Total Doctors</h3>
+                <div class="stat-value" id="totalDoctors">0</div>
+            </div>
+            <div class="stat-card">
+                <h3>Today's Appointments</h3>
+                <div class="stat-value" id="todaysAppointments">0</div>
+            </div>
+            <div class="stat-card">
+                <h3>Available Doctors</h3>
+                <div class="stat-value" id="availableDoctors">0</div>
+            </div>
+        </div>
+        
+        <div class="tabs">
+            <button class="tab active" onclick="openTab('dashboard')">Dashboard</button>
+            <button class="tab" onclick="openTab('patients')">Patients</button>
+            <button class="tab" onclick="openTab('doctors')">Doctors</button>
+            <button class="tab" onclick="openTab('appointments')">Appointments</button>
+            <button class="tab" onclick="openTab('records')">Medical Records</button>
+        </div>
+
+        <!-- Dashboard Tab -->
+        <div id="dashboard" class="tab-content active">
+            <h2>Doctor Availability Today</h2>
+            <div id="doctorAvailabilityToday">
+                <!-- Doctor availability will be populated here -->
+            </div>
+            
+            <h2>Recent Activity</h2>
+            <div id="recentActivity">
+                <!-- Recent activity will be populated here -->
+            </div>
+        </div>
+        
+        <!-- Patients Tab -->
+        <div id="patients" class="tab-content">
+            <div class="search-container">
+                <input type="text" id="patientSearch" placeholder="Search patients...">
+                <button onclick="searchPatients()">Search</button>
+                <button onclick="showAddPatientForm()" style="float: right;">Add New Patient</button>
+            </div>
+            
+            <div id="patientForm" style="display: none;">
+                <h2 id="patientFormTitle">Add New Patient</h2>
+                <div id="patientAlert"></div>
+                <form id="patientDataForm">
+                    <input type="hidden" id="patientId">
+                    <div class="form-group">
+                        <label for="patientName">Full Name</label>
+                        <input type="text" id="patientName" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="patientGender">Gender</label>
+                        <select id="patientGender" required>
+                            <option value="">Select Gender</option>
+                            <option value="Male">Male</option>
+                            <option value="Female">Female</option>
+                            <option value="Other">Other</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="patientDob">Date of Birth</label>
+                        <input type="date" id="patientDob" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="patientAddress">Address</label>
+                        <input type="text" id="patientAddress" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="patientPhone">Phone Number</label>
+                        <input type="tel" id="patientPhone" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="patientEmail">Email</label>
+                        <input type="email" id="patientEmail">
+                    </div>
+                    <div class="form-group">
+                        <label for="patientBloodType">Blood Type</label>
+                        <select id="patientBloodType">
+                            <option value="">Unknown</option>
+                            <option value="A+">A+</option>
+                            <option value="A-">A-</option>
+                            <option value="B+">B+</option>
+                            <option value="B-">B-</option>
+                            <option value="AB+">AB+</option>
+                            <option value="AB-">AB-</option>
+                            <option value="O+">O+</option>
+                            <option value="O-">O-</option>
+                        </select>
+                    </div>
+                    <button type="button" onclick="savePatient()">Save Patient</button>
+                    <button type="button" onclick="cancelPatientForm()" style="background-color: #6c757d;">Cancel</button>
+                </form>
+            </div>
+            
+            <table id="patientsTable">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Name</th>
+                        <th>Gender</th>
+                        <th>Age</th>
+                        <th>Phone</th>
+                        <th>Blood Type</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody id="patientsList">
+                    <!-- Patient data will be inserted here -->
+                </tbody>
+            </table>
+        </div>
+        
+        <!-- Doctors Tab -->
+        <div id="doctors" class="tab-content">
+            <div class="search-container">
+                <input type="text" id="doctorSearch" placeholder="Search doctors...">
+                <button onclick="searchDoctors()">Search</button>
+                <button onclick="showAddDoctorForm()" style="float: right;">Add New Doctor</button>
+            </div>
+            
+            <div id="doctorForm" style="display: none;">
+                <h2 id="doctorFormTitle">Add New Doctor</h2>
+                <div id="doctorAlert"></div>
+                <form id="doctorDataForm">
+                    <input type="hidden" id="doctorId">
+                    <div class="form-group">
+                        <label for="doctorName">Full Name</label>
+                        <input type="text" id="doctorName" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="doctorSpecialization">Specialization</label>
+                        <select id="doctorSpecialization" required>
+                            <option value="">Select Specialization</option>
+                            <option value="Cardiology">Cardiology</option>
+                            <option value="Neurology">Neurology</option>
+                            <option value="Pediatrics">Pediatrics</option>
+                            <option value="Orthopedics">Orthopedics</option>
+                            <option value="Dermatology">Dermatology</option>
+                            <option value="Oncology">Oncology</option>
+                            <option value="General">General Physician</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="doctorGender">Gender</label>
+                        <select id="doctorGender" required>
+                            <option value="">Select Gender</option>
+                            <option value="Male">Male</option>
+                            <option value="Female">Female</option>
+                            <option value="Other">Other</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="doctorPhone">Phone Number</label>
+                        <input type="tel" id="doctorPhone" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="doctorEmail">Email</label>
+                        <input type="email" id="doctorEmail" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="doctorSchedule">Schedule</label>
+                        <input type="text" id="doctorSchedule" placeholder="e.g., Mon-Fri 9AM-5PM">
+                    </div>
+                    <div class="form-group">
+                        <label>Weekly Availability</label>
+                        <div class="availability-grid">
+                            <div class="availability-day" data-day="monday" onclick="toggleAvailability('monday')">
+                                <strong>Mon</strong>
+                                <div class="time-slots" id="monday-slots"></div>
+                            </div>
+                            <div class="availability-day" data-day="tuesday" onclick="toggleAvailability('tuesday')">
+                                <strong>Tue</strong>
+                                <div class="time-slots" id="tuesday-slots"></div>
+                            </div>
+                            <div class="availability-day" data-day="wednesday" onclick="toggleAvailability('wednesday')">
+                                <strong>Wed</strong>
+                                <div class="time-slots" id="wednesday-slots"></div>
+                            </div>
+                            <div class="availability-day" data-day="thursday" onclick="toggleAvailability('thursday')">
+                                <strong>Thu</strong>
+                                <div class="time-slots" id="thursday-slots"></div>
+                            </div>
+                            <div class="availability-day" data-day="friday" onclick="toggleAvailability('friday')">
+                                <strong>Fri</strong>
+                                <div class="time-slots" id="friday-slots"></div>
+                            </div>
+                            <div class="availability-day" data-day="saturday" onclick="toggleAvailability('saturday')">
+                                <strong>Sat</strong>
+                                <div class="time-slots" id="saturday-slots"></div>
+                            </div>
+                            <div class="availability-day" data-day="sunday" onclick="toggleAvailability('sunday')">
+                                <strong>Sun</strong>
+                                <div class="time-slots" id="sunday-slots"></div>
+                            </div>
+                        </div>
+                        <p><small>Click on days to toggle availability. Green = Available, Red = Unavailable</small></p>
+                    </div>
+                    <button type="button" onclick="saveDoctor()">Save Doctor</button>
+                    <button type="button" onclick="cancelDoctorForm()" style="background-color: #6c757d;">Cancel</button>
+                </form>
+            </div>
+            
+            <table id="doctorsTable">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Name</th>
+                        <th>Specialization</th>
+                        <th>Gender</th>
+                        <th>Phone</th>
+                        <th>Today's Status</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody id="doctorsList">
+                    <!-- Doctor data will be inserted here -->
+                </tbody>
+            </table>
+        </div>
+        
+        <!-- Appointments Tab -->
+        <div id="appointments" class="tab-content">
+            <div class="search-container">
+                <input type="text" id="appointmentSearch" placeholder="Search appointments...">
+                <button onclick="searchAppointments()">Search</button>
+                <button onclick="showAddAppointmentForm()" style="float: right;">Schedule Appointment</button>
+            </div>
+            
+            <div id="appointmentForm" style="display: none;">
+                <h2 id="appointmentFormTitle">Schedule New Appointment</h2>
+                <div id="appointmentAlert"></div>
+                <form id="appointmentDataForm">
+                    <input type="hidden" id="appointmentId">
+                    <div class="form-group">
+                        <label for="appointmentPatient">Patient</label>
+                        <select id="appointmentPatient" required>
+                            <option value="">Select Patient</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="appointmentDoctor">Doctor</label>
+                        <select id="appointmentDoctor" required>
+                            <option value="">Select Doctor</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="appointmentDate">Date</label>
+                        <input type="date" id="appointmentDate" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="appointmentTime">Time</label>
+                        <input type="time" id="appointmentTime" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="appointmentReason">Reason</label>
+                        <input type="text" id="appointmentReason" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="appointmentStatus">Status</label>
+                        <select id="appointmentStatus" required>
+                            <option value="Scheduled">Scheduled</option>
+                            <option value="Completed">Completed</option>
+                            <option value="Cancelled">Cancelled</option>
+                        </select>
+                    </div>
+                    <button type="button" onclick="saveAppointment()">Save Appointment</button>
+                    <button type="button" onclick="cancelAppointmentForm()" style="background-color: #6c757d;">Cancel</button>
+                </form>
+            </div>
+            
+            <table id="appointmentsTable">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Patient</th>
+                        <th>Doctor</th>
+                        <th>Date & Time</th>
+                        <th>Reason</th>
+                        <th>Status</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody id="appointmentsList">
+                    <!-- Appointment data will be inserted here -->
+                </tbody>
+            </table>
+        </div>
+        
+        <!-- Medical Records Tab -->
+        <div id="records" class="tab-content">
+            <div class="search-container">
+                <input type="text" id="recordSearch" placeholder="Search records...">
+                <button onclick="searchRecords()">Search</button>
+                <button onclick="showAddRecordForm()" style="float: right;">Add New Record</button>
+            </div>
+            
+            <div id="recordForm" style="display: none;">
+                <h2 id="recordFormTitle">Add Medical Record</h2>
+                <div id="recordAlert"></div>
+                <form id="recordDataForm">
+                    <input type="hidden" id="recordId">
+                    <div class="form-group">
+                        <label for="recordPatient">Patient</label>
+                        <select id="recordPatient" required>
+                            <option value="">Select Patient</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="recordDoctor">Doctor</label>
+                        <select id="recordDoctor" required>
+                            <option value="">Select Doctor</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="recordDate">Date</label>
+                        <input type="date" id="recordDate" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="recordDiagnosis">Diagnosis</label>
+                        <input type="text" id="recordDiagnosis" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="recordTreatment">Treatment</label>
+                        <textarea id="recordTreatment" rows="3" required></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label for="recordMedication">Medication</label>
+                        <textarea id="recordMedication" rows="2"></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label for="recordNotes">Notes</label>
+                        <textarea id="recordNotes" rows="2"></textarea>
+                    </div>
+                    <button type="button" onclick="saveRecord()">Save Record</button>
+                    <button type="button" onclick="cancelRecordForm()" style="background-color: #6c757d;">Cancel</button>
+                </form>
+            </div>
+            
+            <table id="recordsTable">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Patient</th>
+                        <th>Doctor</th>
+                        <th>Date</th>
+                        <th>Diagnosis</th>
+                        <th>Treatment</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody id="recordsList">
+                    <!-- Record data will be inserted here -->
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <script>
+        // Data storage
+        let patients = JSON.parse(localStorage.getItem('patients')) || [];
+        let doctors = JSON.parse(localStorage.getItem('doctors')) || [];
+        let appointments = JSON.parse(localStorage.getItem('appointments')) || [];
+        let records = JSON.parse(localStorage.getItem('records')) || [];
+        let notifications = JSON.parse(localStorage.getItem('notifications')) || [];
+        
+        // Time slots for doctor availability
+        const timeSlots = ['09:00', '09:30', '10:00', '10:30', '11:00', '11:30', '12:00', '12:30', '13:00', '13:30', '14:00', '14:30', '15:00', '15:30', '16:00', '16:30', '17:00'];
+        const daysOfWeek = ['monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday', 'sunday'];
+        
+        // Initialize the system
+        document.addEventListener('DOMContentLoaded', function() {
+            updateStats();
+            renderPatients();
+            renderDoctors();
+            renderAppointments();
+            renderRecords();
+            renderNotifications();
+            renderDashboard();
+            
+            // Populate patient and doctor dropdowns
+            populatePatientDropdowns();
+            populateDoctorDropdowns();
+            
+            // Initialize time slots for all days
+            initializeTimeSlots();
+        });
+        
+        // Tab navigation
+        function openTab(tabName) {
+            const tabs = document.getElementsByClassName('tab');
+            for (let i = 0; i < tabs.length; i++) {
+                tabs[i].classList.remove('active');
+            }
+            
+            const tabContents = document.getElementsByClassName('tab-content');
+            for (let i = 0; i < tabContents.length; i++) {
+                tabContents[i].classList.remove('active');
+            }
+            
+            document.getElementById(tabName).classList.add('active');
+            event.currentTarget.classList.add('active');
+            
+            if (tabName === 'dashboard') {
+                renderDashboard();
+            }
+        }
+        
+        // Update statistics
+        function updateStats() {
+            document.getElementById('totalPatients').textContent = patients.length;
+            document.getElementById('totalDoctors').textContent = doctors.length;
+            
+            const today = new Date().toISOString().split('T')[0];
+            const todaysApps = appointments.filter(app => app.date === today).length;
+            document.getElementById('todaysAppointments').textContent = todaysApps;
+            
+            const availableDoctorsToday = getAvailableDoctorsToday();
+            document.getElementById('availableDoctors').textContent = availableDoctorsToday;
+        }
+        
+        // Notification management
+        function addNotification(type, message, data = {}) {
+            const notification = {
+                id: generateId(),
+                type: type,
+                message: message,
+                timestamp: new Date().toISOString(),
+                data: data
+            };
+            notifications.unshift(notification);
+            
+            // Keep only last 20 notifications
+            if (notifications.length > 20) {
+                notifications = notifications.slice(0, 20);
+            }
+            
+            saveData();
+            renderNotifications();
+        }
+        
+        function renderNotifications() {
+            const container = document.getElementById('notificationsContainer');
+            container.innerHTML = '';
+            
+            if (notifications.length === 0) {
+                container.innerHTML = '<p style="color: #666;">No recent notifications</p>';
+                return;
+            }
+            
+            notifications.slice(0, 5).forEach(notification => {
+                const notificationDiv = document.createElement('div');
+                notificationDiv.className = `notification-item ${notification.type}`;
+                notificationDiv.innerHTML = `
+                    <div style="display: flex; justify-content: space-between; align-items: center;">
+                        <span>${notification.message}</span>
+                        <small style="color: #666;">${formatDateTime(notification.timestamp)}</small>
+                    </div>
+                `;
+                container.appendChild(notificationDiv);
+            });
+        }
+        
+        // Dashboard functions
+        function renderDashboard() {
+            renderDoctorAvailabilityToday();
+            renderRecentActivity();
+        }
+        
+        function renderDoctorAvailabilityToday() {
+            const container = document.getElementById('doctorAvailabilityToday');
+            const today = new Date().toLocaleDateString('en-US', { weekday: 'long' }).toLowerCase();
+            
+            let html = '<div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 15px;">';
+            
+            doctors.forEach(doctor => {
+                const isAvailable = isDoctorAvailableToday(doctor, today);
+                const todaysAppointments = getTodaysAppointmentsForDoctor(doctor.id);
+                
+                html += `
+                    <div style="border: 1px solid #ddd; border-radius: 5px; padding: 15px; background-color: #f9f9f9;">
+                        <h4 style="margin-top: 0;">${doctor.name}</h4>
+                        <p><strong>Specialization:</strong> ${doctor.specialization}</p>
+                        <p><strong>Status:</strong> <span class="${isAvailable ? 'status-available' : 'status-unavailable'}">${isAvailable ? 'Available' : 'Not Available'}</span></p>
+                        <p><strong>Today's Appointments:</strong> ${todaysAppointments.length}</p>
+                        ${isAvailable ? `<p><strong>Available Slots:</strong> ${getAvailableSlots(doctor, today).length}</p>` : ''}
+                    </div>
+                `;
+            });
+            
+            html += '</div>';
+            container.innerHTML = html;
+        }
+
+        function renderRecentActivity() {
+            const container = document.getElementById('recentActivity');
+            const recentItems = [...appointments, ...records].sort((a, b) => 
+                new Date(b.date) - new Date(a.date)).slice(0, 5);
+            
+            if (recentItems.length === 0) {
+                container.innerHTML = '<p style="color: #666;">No recent activity</p>';
+                return;
+            }
+            
+            let html = '<div style="display: grid; gap: 10px;">';
+            
+            recentItems.forEach(item => {
+                const isAppointment = item.hasOwnProperty('reason');
+                const patient = patients.find(p => p.id === item.patientId);
+                const doctor = doctors.find(d => d.id === item.doctorId);
+                
+                if (!patient || !doctor) return;
+                
+                html += `
+                    <div style="border: 1px solid #ddd; border-radius: 5px; padding: 10px 15px; background-color: #f9f9f9;">
+                        <div style="display: flex; justify-content: space-between; align-items: center;">
+                            <div>
+                                <strong>${isAppointment ? 'Appointment' : 'Medical Record'}</strong> - 
+                                ${isAppointment ? item.reason : item.diagnosis}
+                            </div>
+                            <small style="color: #666;">${formatDate(item.date)}</small>
+                        </div>
+                        <div style="margin-top: 5px; font-size: 14px;">
+                            <span style="color: #0077b6;">${patient.name}</span> with 
+                            <span style="color: #28a745;">Dr. ${doctor.name}</span>
+                        </div>
+                    </div>
+                `;
+            });
+            
+            html += '</div>';
+            container.innerHTML = html;
+        }
+
+        // Patient management
+        function showAddPatientForm() {
+            document.getElementById('patientForm').style.display = 'block';
+            document.getElementById('patientFormTitle').textContent = 'Add New Patient';
+            document.getElementById('patientId').value = '';
+            document.getElementById('patientDataForm').reset();
+            document.getElementById('patientAlert').innerHTML = '';
+        }
+
+        function showEditPatientForm(patientId) {
+            const patient = patients.find(p => p.id === patientId);
+            if (!patient) return;
+            
+            document.getElementById('patientForm').style.display = 'block';
+            document.getElementById('patientFormTitle').textContent = 'Edit Patient';
+            document.getElementById('patientId').value = patient.id;
+            document.getElementById('patientName').value = patient.name;
+            document.getElementById('patientGender').value = patient.gender;
+            document.getElementById('patientDob').value = patient.dob;
+            document.getElementById('patientAddress').value = patient.address;
+            document.getElementById('patientPhone').value = patient.phone;
+            document.getElementById('patientEmail').value = patient.email || '';
+            document.getElementById('patientBloodType').value = patient.bloodType || '';
+            document.getElementById('patientAlert').innerHTML = '';
+        }
+
+        function cancelPatientForm() {
+            document.getElementById('patientForm').style.display = 'none';
+        }
+
+        function savePatient() {
+            const id = document.getElementById('patientId').value;
+            const name = document.getElementById('patientName').value.trim();
+            const gender = document.getElementById('patientGender').value;
+            const dob = document.getElementById('patientDob').value;
+            const address = document.getElementById('patientAddress').value.trim();
+            const phone = document.getElementById('patientPhone').value.trim();
+            const email = document.getElementById('patientEmail').value.trim();
+            const bloodType = document.getElementById('patientBloodType').value;
+            
+            // Validate required fields
+            if (!name || !gender || !dob || !address || !phone) {
+                showAlert('patientAlert', 'Please fill in all required fields', 'error');
+                return;
+            }
+            
+            // Validate phone number
+            if (!/^\d{10,15}$/.test(phone)) {
+                showAlert('patientAlert', 'Please enter a valid phone number (10-15 digits)', 'error');
+                return;
+            }
+            
+            // Validate email if provided
+            if (email && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+                showAlert('patientAlert', 'Please enter a valid email address', 'error');
+                return;
+            }
+            
+            if (id) {
+                // Update existing patient
+                const index = patients.findIndex(p => p.id === id);
+                if (index !== -1) {
+                    patients[index] = {
+                        ...patients[index],
+                        name, gender, dob, address, phone, email, bloodType
+                    };
+                    addNotification('update', `Patient ${name} updated`, { patientId: id });
+                }
+            } else {
+                // Add new patient
+                const newPatient = {
+                    id: generateId(),
+                    name, gender, dob, address, phone, email, bloodType
+                };
+                patients.push(newPatient);
+                addNotification('new', `New patient ${name} added`, { patientId: newPatient.id });
+            }
+            
+            saveData();
+            renderPatients();
+            updateStats();
+            cancelPatientForm();
+            showAlert('patientAlert', 'Patient saved successfully!', 'success');
+        }
+
+        function deletePatient(patientId) {
+            if (confirm('Are you sure you want to delete this patient? This will also delete all related appointments and records.')) {
+                // Check for related appointments and records
+                const patientAppointments = appointments.filter(app => app.patientId === patientId);
+                const patientRecords = records.filter(rec => rec.patientId === patientId);
+                
+                if (patientAppointments.length > 0 || patientRecords.length > 0) {
+                    if (confirm(`This patient has ${patientAppointments.length} appointment(s) and ${patientRecords.length} record(s). Delete them all?`)) {
+                        // Remove related appointments and records
+                        appointments = appointments.filter(app => app.patientId !== patientId);
+                        records = records.filter(rec => rec.patientId !== patientId);
+                    } else {
+                        return;
+                    }
+                }
+                
+                const patient = patients.find(p => p.id === patientId);
+                if (patient) {
+                    patients = patients.filter(p => p.id !== patientId);
+                    addNotification('delete', `Patient ${patient.name} deleted`, { patientId });
+                    saveData();
+                    renderPatients();
+                    updateStats();
+                    populatePatientDropdowns();
+                }
+            }
+        }
+
+        function renderPatients() {
+            const container = document.getElementById('patientsList');
+            container.innerHTML = '';
+            
+            if (patients.length === 0) {
+                container.innerHTML = '<tr><td colspan="7" style="text-align: center;">No patients found</td></tr>';
+                return;
+            }
+            
+            patients.forEach(patient => {
+                const age = calculateAge(patient.dob);
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td>${patient.id.substring(0, 8)}</td>
+                    <td>${patient.name}</td>
+                    <td>${patient.gender}</td>
+                    <td>${age}</td>
+                    <td>${patient.phone}</td>
+                    <td>${patient.bloodType || 'N/A'}</td>
+                    <td class="action-btns">
+                        <button class="edit-btn" onclick="showEditPatientForm('${patient.id}')">Edit</button>
+                        <button class="delete-btn" onclick="deletePatient('${patient.id}')">Delete</button>
+                    </td>
+                `;
+                container.appendChild(row);
+            });
+        }
+
+        function searchPatients() {
+            const searchTerm = document.getElementById('patientSearch').value.toLowerCase();
+            const filteredPatients = patients.filter(patient => 
+                patient.name.toLowerCase().includes(searchTerm) || 
+                patient.phone.includes(searchTerm) ||
+                (patient.email && patient.email.toLowerCase().includes(searchTerm)) ||
+                patient.id.toLowerCase().includes(searchTerm)
+            );
+            
+            const container = document.getElementById('patientsList');
+            container.innerHTML = '';
+            
+            if (filteredPatients.length === 0) {
+                container.innerHTML = '<tr><td colspan="7" style="text-align: center;">No matching patients found</td></tr>';
+                return;
+            }
+            
+            filteredPatients.forEach(patient => {
+                const age = calculateAge(patient.dob);
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td>${patient.id.substring(0, 8)}</td>
+                    <td>${patient.name}</td>
+                    <td>${patient.gender}</td>
+                    <td>${age}</td>
+                    <td>${patient.phone}</td>
+                    <td>${patient.bloodType || 'N/A'}</td>
+                    <td class="action-btns">
+                        <button class="edit-btn" onclick="showEditPatientForm('${patient.id}')">Edit</button>
+                        <button class="delete-btn" onclick="deletePatient('${patient.id}')">Delete</button>
+                    </td>
+                `;
+                container.appendChild(row);
+            });
+        }
+
+        // Doctor management
+        function showAddDoctorForm() {
+            document.getElementById('doctorForm').style.display = 'block';
+            document.getElementById('doctorFormTitle').textContent = 'Add New Doctor';
+            document.getElementById('doctorId').value = '';
+            document.getElementById('doctorDataForm').reset();
+            document.getElementById('doctorAlert').innerHTML = '';
+            
+            // Reset availability
+            daysOfWeek.forEach(day => {
+                const dayElement = document.querySelector(`.availability-day[data-day="${day}"]`);
+                dayElement.classList.remove('available', 'unavailable');
+                document.getElementById(`${day}-slots`).innerHTML = '';
+            });
+        }
+
+        function showEditDoctorForm(doctorId) {
+            const doctor = doctors.find(d => d.id === doctorId);
+            if (!doctor) return;
+            
+            document.getElementById('doctorForm').style.display = 'block';
+            document.getElementById('doctorFormTitle').textContent = 'Edit Doctor';
+            document.getElementById('doctorId').value = doctor.id;
+            document.getElementById('doctorName').value = doctor.name;
+            document.getElementById('doctorSpecialization').value = doctor.specialization;
+            document.getElementById('doctorGender').value = doctor.gender;
+            document.getElementById('doctorPhone').value = doctor.phone;
+            document.getElementById('doctorEmail').value = doctor.email;
+            document.getElementById('doctorSchedule').value = doctor.schedule || '';
+            document.getElementById('doctorAlert').innerHTML = '';
+            
+            // Set availability
+            daysOfWeek.forEach(day => {
+                const dayElement = document.querySelector(`.availability-day[data-day="${day}"]`);
+                const slotsContainer = document.getElementById(`${day}-slots`);
+                slotsContainer.innerHTML = '';
+                
+                if (doctor.availability && doctor.availability[day] && doctor.availability[day].available) {
+                    dayElement.classList.add('available');
+                    dayElement.classList.remove('unavailable');
+                    
+                    // Add time slots
+                    doctor.availability[day].timeSlots.forEach(slot => {
+                        const slotElement = document.createElement('div');
+                        slotElement.className = `time-slot ${slot.booked ? 'booked' : 'available'}`;
+                        slotElement.textContent = slot.time;
+                        slotElement.onclick = (e) => {
+                            e.stopPropagation();
+                            toggleTimeSlot(day, slot.time);
+                        };
+                        slotsContainer.appendChild(slotElement);
+                    });
+                } else {
+                    dayElement.classList.add('unavailable');
+                    dayElement.classList.remove('available');
+                }
+            });
+        }
+
+        function cancelDoctorForm() {
+            document.getElementById('doctorForm').style.display = 'none';
+        }
+
+        function saveDoctor() {
+            const id = document.getElementById('doctorId').value;
+            const name = document.getElementById('doctorName').value.trim();
+            const specialization = document.getElementById('doctorSpecialization').value;
+            const gender = document.getElementById('doctorGender').value;
+            const phone = document.getElementById('doctorPhone').value.trim();
+            const email = document.getElementById('doctorEmail').value.trim();
+            const schedule = document.getElementById('doctorSchedule').value.trim();
+            
+            // Validate required fields
+            if (!name || !specialization || !gender || !phone || !email) {
+                showAlert('doctorAlert', 'Please fill in all required fields', 'error');
+                return;
+            }
+            
+            // Validate phone number
+            if (!/^\d{10,15}$/.test(phone)) {
+                showAlert('doctorAlert', 'Please enter a valid phone number (10-15 digits)', 'error');
+                return;
+            }
+            
+            // Validate email
+            if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+                showAlert('doctorAlert', 'Please enter a valid email address', 'error');
+                return;
+            }
+            
+            // Collect availability data
+            const availability = {};
+            daysOfWeek.forEach(day => {
+                const dayElement = document.querySelector(`.availability-day[data-day="${day}"]`);
+                availability[day] = {
+                    available: dayElement.classList.contains('available'),
+                    timeSlots: []
+                };
+                
+                if (availability[day].available) {
+                    const slotElements = document.getElementById(`${day}-slots`).querySelectorAll('.time-slot');
+                    slotElements.forEach(slotElement => {
+                        availability[day].timeSlots.push({
+                            time: slotElement.textContent,
+                            booked: slotElement.classList.contains('booked')
+                        });
+                    });
+                }
+            });
+            
+            if (id) {
+                // Update existing doctor
+                const index = doctors.findIndex(d => d.id === id);
+                if (index !== -1) {
+                    doctors[index] = {
+                        ...doctors[index],
+                        name, specialization, gender, phone, email, schedule, availability
+                    };
+                    addNotification('update', `Doctor ${name} updated`, { doctorId: id });
+                }
+            } else {
+                // Add new doctor
+                const newDoctor = {
+                    id: generateId(),
+                    name, specialization, gender, phone, email, schedule, availability
+                };
+                doctors.push(newDoctor);
+                addNotification('new', `New doctor ${name} added`, { doctorId: newDoctor.id });
+            }
+            
+            saveData();
+            renderDoctors();
+            updateStats();
+            populateDoctorDropdowns();
+            cancelDoctorForm();
+            showAlert('doctorAlert', 'Doctor saved successfully!', 'success');
+        }
+
+        function deleteDoctor(doctorId) {
+            if (confirm('Are you sure you want to delete this doctor? This will also delete all related appointments and records.')) {
+                // Check for related appointments and records
+                const doctorAppointments = appointments.filter(app => app.doctorId === doctorId);
+                const doctorRecords = records.filter(rec => rec.doctorId === doctorId);
+                
+                if (doctorAppointments.length > 0 || doctorRecords.length > 0) {
+                    if (confirm(`This doctor has ${doctorAppointments.length} appointment(s) and ${doctorRecords.length} record(s). Delete them all?`)) {
+                        // Remove related appointments and records
+                        appointments = appointments.filter(app => app.doctorId !== doctorId);
+                        records = records.filter(rec => rec.doctorId !== doctorId);
+                    } else {
+                        return;
+                    }
+                }
+                
+                const doctor = doctors.find(d => d.id === doctorId);
+                if (doctor) {
+                    doctors = doctors.filter(d => d.id !== doctorId);
+                    addNotification('delete', `Doctor ${doctor.name} deleted`, { doctorId });
+                    saveData();
+                    renderDoctors();
+                    updateStats();
+                    populateDoctorDropdowns();
+                }
+            }
+        }
+
+        function renderDoctors() {
+            const container = document.getElementById('doctorsList');
+            container.innerHTML = '';
+            
+            if (doctors.length === 0) {
+                container.innerHTML = '<tr><td colspan="7" style="text-align: center;">No doctors found</td></tr>';
+                return;
+            }
+            
+            const today = new Date().toLocaleDateString('en-US', { weekday: 'long' }).toLowerCase();
+            
+            doctors.forEach(doctor => {
+                const isAvailable = isDoctorAvailableToday(doctor, today);
+                const statusText = isAvailable ? 'Available' : 'Not Available';
+                const statusClass = isAvailable ? 'status-available' : 'status-unavailable';
+                
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td>${doctor.id.substring(0, 8)}</td>
+                    <td>Dr. ${doctor.name}</td>
+                    <td>${doctor.specialization}</td>
+                    <td>${doctor.gender}</td>
+                    <td>${doctor.phone}</td>
+                    <td><span class="${statusClass}">${statusText}</span></td>
+                    <td class="action-btns">
+                        <button class="edit-btn" onclick="showEditDoctorForm('${doctor.id}')">Edit</button>
+                        <button class="delete-btn" onclick="deleteDoctor('${doctor.id}')">Delete</button>
+                    </td>
+                `;
+                container.appendChild(row);
+            });
+        }
+
+        function searchDoctors() {
+            const searchTerm = document.getElementById('doctorSearch').value.toLowerCase();
+            const filteredDoctors = doctors.filter(doctor => 
+                doctor.name.toLowerCase().includes(searchTerm) || 
+                doctor.specialization.toLowerCase().includes(searchTerm) ||
+                doctor.phone.includes(searchTerm) ||
+                doctor.id.toLowerCase().includes(searchTerm)
+            );
+            
+            const container = document.getElementById('doctorsList');
+            container.innerHTML = '';
+            
+            if (filteredDoctors.length === 0) {
+                container.innerHTML = '<tr><td colspan="7" style="text-align: center;">No matching doctors found</td></tr>';
+                return;
+            }
+            
+            const today = new Date().toLocaleDateString('en-US', { weekday: 'long' }).toLowerCase();
+            
+            filteredDoctors.forEach(doctor => {
+                const isAvailable = isDoctorAvailableToday(doctor, today);
+                const statusText = isAvailable ? 'Available' : 'Not Available';
+                const statusClass = isAvailable ? 'status-available' : 'status-unavailable';
+                
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td>${doctor.id.substring(0, 8)}</td>
+                    <td>Dr. ${doctor.name}</td>
+                    <td>${doctor.specialization}</td>
+                    <td>${doctor.gender}</td>
+                    <td>${doctor.phone}</td>
+                    <td><span class="${statusClass}">${statusText}</span></td>
+                    <td class="action-btns">
+                        <button class="edit-btn" onclick="showEditDoctorForm('${doctor.id}')">Edit</button>
+                        <button class="delete-btn" onclick="deleteDoctor('${doctor.id}')">Delete</button>
+                    </td>
+                `;
+                container.appendChild(row);
+            });
+        }
+
+        // Doctor availability functions
+        function toggleAvailability(day) {
+            const dayElement = document.querySelector(`.availability-day[data-day="${day}"]`);
+            const slotsContainer = document.getElementById(`${day}-slots`);
+            
+            if (dayElement.classList.contains('available')) {
+                dayElement.classList.remove('available');
+                dayElement.classList.add('unavailable');
+                slotsContainer.innerHTML = '';
+            } else {
+                dayElement.classList.remove('unavailable');
+                dayElement.classList.add('available');
+                
+                // Initialize time slots for this day
+                slotsContainer.innerHTML = '';
+                timeSlots.forEach(slot => {
+                    const slotElement = document.createElement('div');
+                    slotElement.className = 'time-slot available';
+                    slotElement.textContent = slot;
+                    slotElement.onclick = (e) => {
+                        e.stopPropagation();
+                        toggleTimeSlot(day, slot);
+                    };
+                    slotsContainer.appendChild(slotElement);
+                });
+            }
+        }
+
+        function toggleTimeSlot(day, time) {
+            const slotElement = [...document.getElementById(`${day}-slots`).children].find(
+                el => el.textContent === time
+            );
+            
+            if (slotElement) {
+                slotElement.classList.toggle('available');
+                slotElement.classList.toggle('booked');
+            }
+        }
+
+        function initializeTimeSlots() {
+            daysOfWeek.forEach(day => {
+                const dayElement = document.querySelector(`.availability-day[data-day="${day}"]`);
+                dayElement.classList.add('unavailable');
+            });
+        }
+
+        function isDoctorAvailableToday(doctor, today) {
+            if (!doctor.availability || !doctor.availability[today]) {
+                return false;
+            }
+            
+            return doctor.availability[today].available;
+        }
+
+        function getAvailableSlots(doctor, today) {
+            if (!isDoctorAvailableToday(doctor, today)) {
+                return [];
+            }
+            
+            const bookedAppointments = appointments.filter(app => 
+                app.doctorId === doctor.id && 
+                app.date === new Date().toISOString().split('T')[0] &&
+                app.status !== 'Cancelled'
+            );
+            
+            const bookedTimes = bookedAppointments.map(app => app.time);
+            
+            return doctor.availability[today].timeSlots
+                .filter(slot => !slot.booked && !bookedTimes.includes(slot.time))
+                .map(slot => slot.time);
+        }
+
+        function getAvailableDoctorsToday() {
+            const today = new Date().toLocaleDateString('en-US', { weekday: 'long' }).toLowerCase();
+            return doctors.filter(doctor => isDoctorAvailableToday(doctor, today)).length;
+        }
+
+        function getTodaysAppointmentsForDoctor(doctorId) {
+            const today = new Date().toISOString().split('T')[0];
+            return appointments.filter(app => 
+                app.doctorId === doctorId && 
+                app.date === today &&
+                app.status !== 'Cancelled'
+            );
+        }
+
+        // Appointment management
+        function showAddAppointmentForm() {
+            document.getElementById('appointmentForm').style.display = 'block';
+            document.getElementById('appointmentFormTitle').textContent = 'Schedule New Appointment';
+            document.getElementById('appointmentId').value = '';
+            document.getElementById('appointmentDataForm').reset();
+            document.getElementById('appointmentStatus').value = 'Scheduled';
+            document.getElementById('appointmentAlert').innerHTML = '';
+            
+            // Set default date to today
+            document.getElementById('appointmentDate').valueAsDate = new Date();
+        }
+
+        function showEditAppointmentForm(appointmentId) {
+            const appointment = appointments.find(a => a.id === appointmentId);
+            if (!appointment) return;
+            
+            document.getElementById('appointmentForm').style.display = 'block';
+            document.getElementById('appointmentFormTitle').textContent = 'Edit Appointment';
+            document.getElementById('appointmentId').value = appointment.id;
+            document.getElementById('appointmentPatient').value = appointment.patientId;
+            document.getElementById('appointmentDoctor').value = appointment.doctorId;
+            document.getElementById('appointmentDate').value = appointment.date;
+            document.getElementById('appointmentTime').value = appointment.time;
+            document.getElementById('appointmentReason').value = appointment.reason;
+            document.getElementById('appointmentStatus').value = appointment.status;
+            document.getElementById('appointmentAlert').innerHTML = '';
+        }
+
+        function cancelAppointmentForm() {
+            document.getElementById('appointmentForm').style.display = 'none';
+        }
+
+        function saveAppointment() {
+            const id = document.getElementById('appointmentId').value;
+            const patientId = document.getElementById('appointmentPatient').value;
+            const doctorId = document.getElementById('appointmentDoctor').value;
+            const date = document.getElementById('appointmentDate').value;
+            const time = document.getElementById('appointmentTime').value;
+            const reason = document.getElementById('appointmentReason').value.trim();
+            const status = document.getElementById('appointmentStatus').value;
+            
+            // Validate required fields
+            if (!patientId || !doctorId || !date || !time || !reason) {
+                showAlert('appointmentAlert', 'Please fill in all required fields', 'error');
+                return;
+            }
+            
+            // Check if doctor is available on the selected day
+            const dayOfWeek = new Date(date).toLocaleDateString('en-US', { weekday: 'long' }).toLowerCase();
+            const doctor = doctors.find(d => d.id === doctorId);
+            
+            if (!doctor || !isDoctorAvailableToday(doctor, dayOfWeek)) {
+                showAlert('appointmentAlert', 'Doctor is not available on the selected day', 'error');
+                return;
+            }
+            
+            // Check if time slot is available
+            const availableSlots = getAvailableSlots(doctor, dayOfWeek);
+            if (!availableSlots.includes(time)) {
+                showAlert('appointmentAlert', 'Selected time slot is not available', 'error');
+                return;
+            }
+            
+            // Check for overlapping appointments
+            const overlappingAppointment = appointments.find(app => 
+                app.id !== id &&
+                app.doctorId === doctorId &&
+                app.date === date &&
+                app.time === time &&
+                app.status !== 'Cancelled'
+            );
+            
+            if (overlappingAppointment) {
+                showAlert('appointmentAlert', 'Doctor already has an appointment at this time', 'error');
+                return;
+            }
+            
+            if (id) {
+                // Update existing appointment
+                const index = appointments.findIndex(a => a.id === id);
+                if (index !== -1) {
+                    appointments[index] = {
+                        ...appointments[index],
+                        patientId, doctorId, date, time, reason, status
+                    };
+                    
+                    const patient = patients.find(p => p.id === patientId);
+                    addNotification('update', `Appointment for ${patient.name} updated`, { appointmentId: id });
+                    
+                    // If status changed to cancelled, add a notification
+                    if (status === 'Cancelled' && appointments[index].status !== 'Cancelled') {
+                        addNotification('cancelled', `Appointment cancelled for ${patient.name}`, { appointmentId: id });
+                    }
+                }
+            } else {
+                // Add new appointment
+                const newAppointment = {
+                    id: generateId(),
+                    patientId, doctorId, date, time, reason, status
+                };
+                appointments.push(newAppointment);
+                
+                const patient = patients.find(p => p.id === patientId);
+                addNotification('new', `New appointment scheduled for ${patient.name}`, { appointmentId: newAppointment.id });
+            }
+            
+            saveData();
+            renderAppointments();
+            updateStats();
+            cancelAppointmentForm();
+            showAlert('appointmentAlert', 'Appointment saved successfully!', 'success');
+        }
+
+        function deleteAppointment(appointmentId) {
+            if (confirm('Are you sure you want to delete this appointment?')) {
+                const appointment = appointments.find(a => a.id === appointmentId);
+                if (appointment) {
+                    appointments = appointments.filter(a => a.id !== appointmentId);
+                    
+                    const patient = patients.find(p => p.id === appointment.patientId);
+                    if (patient) {
+                        addNotification('delete', `Appointment deleted for ${patient.name}`, { appointmentId });
+                    }
+                    
+                    saveData();
+                    renderAppointments();
+                    updateStats();
+                }
+            }
+        }
+
+        function renderAppointments() {
+            const container = document.getElementById('appointmentsList');
+            container.innerHTML = '';
+            
+            if (appointments.length === 0) {
+                container.innerHTML = '<tr><td colspan="7" style="text-align: center;">No appointments found</td></tr>';
+                return;
+            }
+            
+            appointments.forEach(appointment => {
+                const patient = patients.find(p => p.id === appointment.patientId);
+                const doctor = doctors.find(d => d.id === appointment.doctorId);
+                
+                if (!patient || !doctor) return;
+                
+                const statusClass = appointment.status === 'Completed' ? 'status-available' : 
+                                  appointment.status === 'Cancelled' ? 'status-unavailable' : '';
+                
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td>${appointment.id.substring(0, 8)}</td>
+                    <td>${patient.name}</td>
+                    <td>Dr. ${doctor.name}</td>
+                    <td>${formatDate(appointment.date)} at ${appointment.time}</td>
+                    <td>${appointment.reason}</td>
+                    <td><span class="${statusClass}">${appointment.status}</span></td>
+                    <td class="action-btns">
+                        <button class="edit-btn" onclick="showEditAppointmentForm('${appointment.id}')">Edit</button>
+                        <button class="delete-btn" onclick="deleteAppointment('${appointment.id}')">Delete</button>
+                    </td>
+                `;
+                container.appendChild(row);
+            });
+        }
+
+        function searchAppointments() {
+            const searchTerm = document.getElementById('appointmentSearch').value.toLowerCase();
+            const filteredAppointments = appointments.filter(appointment => {
+                const patient = patients.find(p => p.id === appointment.patientId);
+                const doctor = doctors.find(d => d.id === appointment.doctorId);
+                
+                return (
+                    (patient && patient.name.toLowerCase().includes(searchTerm)) ||
+                    (doctor && doctor.name.toLowerCase().includes(searchTerm)) ||
+                    appointment.reason.toLowerCase().includes(searchTerm) ||
+                    appointment.id.toLowerCase().includes(searchTerm)
+                );
+            });
+            
+            const container = document.getElementById('appointmentsList');
+            container.innerHTML = '';
+            
+            if (filteredAppointments.length === 0) {
+                container.innerHTML = '<tr><td colspan="7" style="text-align: center;">No matching appointments found</td></tr>';
+                return;
+            }
+            
+            filteredAppointments.forEach(appointment => {
+                const patient = patients.find(p => p.id === appointment.patientId);
+                const doctor = doctors.find(d => d.id === appointment.doctorId);
+                
+                if (!patient || !doctor) return;
+                
+                const statusClass = appointment.status === 'Completed' ? 'status-available' : 
+                                  appointment.status === 'Cancelled' ? 'status-unavailable' : '';
+                
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td>${appointment.id.substring(0, 8)}</td>
+                    <td>${patient.name}</td>
+                    <td>Dr. ${doctor.name}</td>
+                    <td>${formatDate(appointment.date)} at ${appointment.time}</td>
+                    <td>${appointment.reason}</td>
+                    <td><span class="${statusClass}">${appointment.status}</span></td>
+                    <td class="action-btns">
+                        <button class="edit-btn" onclick="showEditAppointmentForm('${appointment.id}')">Edit</button>
+                        <button class="delete-btn" onclick="deleteAppointment('${appointment.id}')">Delete</button>
+                    </td>
+                `;
+                container.appendChild(row);
+            });
+        }
+
+        // Medical record management
+        function showAddRecordForm() {
+            document.getElementById('recordForm').style.display = 'block';
+            document.getElementById('recordFormTitle').textContent = 'Add Medical Record';
+            document.getElementById('recordId').value = '';
+            document.getElementById('recordDataForm').reset();
+            document.getElementById('recordAlert').innerHTML = '';
+            
+            // Set default date to today
+            document.getElementById('recordDate').valueAsDate = new Date();
+        }
+
+        function showEditRecordForm(recordId) {
+            const record = records.find(r => r.id === recordId);
+            if (!record) return;
+            
+            document.getElementById('recordForm').style.display = 'block';
+            document.getElementById('recordFormTitle').textContent = 'Edit Medical Record';
+            document.getElementById('recordId').value = record.id;
+            document.getElementById('recordPatient').value = record.patientId;
+            document.getElementById('recordDoctor').value = record.doctorId;
+            document.getElementById('recordDate').value = record.date;
+            document.getElementById('recordDiagnosis').value = record.diagnosis;
+            document.getElementById('recordTreatment').value = record.treatment;
+            document.getElementById('recordMedication').value = record.medication || '';
+            document.getElementById('recordNotes').value = record.notes || '';
+            document.getElementById('recordAlert').innerHTML = '';
+        }
+
+        function cancelRecordForm() {
+            document.getElementById('recordForm').style.display = 'none';
+        }
+
+        function saveRecord() {
+            const id = document.getElementById('recordId').value;
+            const patientId = document.getElementById('recordPatient').value;
+            const doctorId = document.getElementById('recordDoctor').value;
+            const date = document.getElementById('recordDate').value;
+            const diagnosis = document.getElementById('recordDiagnosis').value.trim();
+            const treatment = document.getElementById('recordTreatment').value.trim();
+            const medication = document.getElementById('recordMedication').value.trim();
+            const notes = document.getElementById('recordNotes').value.trim();
+            
+            // Validate required fields
+            if (!patientId || !doctorId || !date || !diagnosis || !treatment) {
+                showAlert('recordAlert', 'Please fill in all required fields', 'error');
+                return;
+            }
+            
+            if (id) {
+                // Update existing record
+                const index = records.findIndex(r => r.id === id);
+                if (index !== -1) {
+                    records[index] = {
+                        ...records[index],
+                        patientId, doctorId, date, diagnosis, treatment, medication, notes
+                    };
+                    
+                    const patient = patients.find(p => p.id === patientId);
+                    addNotification('update', `Medical record updated for ${patient.name}`, { recordId: id });
+                }
+            } else {
+                // Add new record
+                const newRecord = {
+                    id: generateId(),
+                    patientId, doctorId, date, diagnosis, treatment, medication, notes
+                };
+                records.push(newRecord);
+                
+                const patient = patients.find(p => p.id === patientId);
+                addNotification('new', `New medical record added for ${patient.name}`, { recordId: newRecord.id });
+            }
+            
+            saveData();
+            renderRecords();
+            cancelRecordForm();
+            showAlert('recordAlert', 'Medical record saved successfully!', 'success');
+        }
+
+        function deleteRecord(recordId) {
+            if (confirm('Are you sure you want to delete this medical record?')) {
+                const record = records.find(r => r.id === recordId);
+                if (record) {
+                    records = records.filter(r => r.id !== recordId);
+                    
+                    const patient = patients.find(p => p.id === record.patientId);
+                    if (patient) {
+                        addNotification('delete', `Medical record deleted for ${patient.name}`, { recordId });
+                    }
+                    
+                    saveData();
+                    renderRecords();
+                }
+            }
+        }
+
+        function renderRecords() {
+            const container = document.getElementById('recordsList');
+            container.innerHTML = '';
+            
+            if (records.length === 0) {
+                container.innerHTML = '<tr><td colspan="7" style="text-align: center;">No medical records found</td></tr>';
+                return;
+            }
+            
+            records.forEach(record => {
+                const patient = patients.find(p => p.id === record.patientId);
+                const doctor = doctors.find(d => d.id === record.doctorId);
+                
+                if (!patient || !doctor) return;
+                
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td>${record.id.substring(0, 8)}</td>
+                    <td>${patient.name}</td>
+                    <td>Dr. ${doctor.name}</td>
+                    <td>${formatDate(record.date)}</td>
+                    <td>${record.diagnosis}</td>
+                    <td>${record.treatment.substring(0, 50)}${record.treatment.length > 50 ? '...' : ''}</td>
+                    <td class="action-btns">
+                        <button class="edit-btn" onclick="showEditRecordForm('${record.id}')">Edit</button>
+                        <button class="delete-btn" onclick="deleteRecord('${record.id}')">Delete</button>
+                    </td>
+                `;
+                container.appendChild(row);
+            });
+        }
+
+        function searchRecords() {
+            const searchTerm = document.getElementById('recordSearch').value.toLowerCase();
+            const filteredRecords = records.filter(record => {
+                const patient = patients.find(p => p.id === record.patientId);
+                const doctor = doctors.find(d => d.id === record.doctorId);
+                
+                return (
+                    (patient && patient.name.toLowerCase().includes(searchTerm)) ||
+                    (doctor && doctor.name.toLowerCase().includes(searchTerm)) ||
+                    record.diagnosis.toLowerCase().includes(searchTerm) ||
+                    record.treatment.toLowerCase().includes(searchTerm) ||
+                    record.id.toLowerCase().includes(searchTerm)
+                );
+            });
+            
+            const container = document.getElementById('recordsList');
+            container.innerHTML = '';
+            
+            if (filteredRecords.length === 0) {
+                container.innerHTML = '<tr><td colspan="7" style="text-align: center;">No matching records found</td></tr>';
+                return;
+            }
+            
+            filteredRecords.forEach(record => {
+                const patient = patients.find(p => p.id === record.patientId);
+                const doctor = doctors.find(d => d.id === record.doctorId);
+                
+                if (!patient || !doctor) return;
+                
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td>${record.id.substring(0, 8)}</td>
+                    <td>${patient.name}</td>
+                    <td>Dr. ${doctor.name}</td>
+                    <td>${formatDate(record.date)}</td>
+                    <td>${record.diagnosis}</td>
+                    <td>${record.treatment.substring(0, 50)}${record.treatment.length > 50 ? '...' : ''}</td>
+                    <td class="action-btns">
+                        <button class="edit-btn" onclick="showEditRecordForm('${record.id}')">Edit</button>
+                        <button class="delete-btn" onclick="deleteRecord('${record.id}')">Delete</button>
+                    </td>
+                `;
+                container.appendChild(row);
+            });
+        }
+
+        // Helper functions
+        function populatePatientDropdowns() {
+            const dropdowns = [
+                document.getElementById('appointmentPatient'),
+                document.getElementById('recordPatient')
+            ];
+            
+            dropdowns.forEach(dropdown => {
+                if (!dropdown) return;
+                
+                // Save current selection
+                const selectedValue = dropdown.value;
+                dropdown.innerHTML = '<option value="">Select Patient</option>';
+                
+                patients.forEach(patient => {
+                    const option = document.createElement('option');
+                    option.value = patient.id;
+                    option.textContent = patient.name;
+                    dropdown.appendChild(option);
+                });
+                
+                // Restore selection if possible
+                if (selectedValue && patients.some(p => p.id === selectedValue)) {
+                    dropdown.value = selectedValue;
+                }
+            });
+        }
+
+        function populateDoctorDropdowns() {
+            const dropdowns = [
+                document.getElementById('appointmentDoctor'),
+                document.getElementById('recordDoctor')
+            ];
+            
+            dropdowns.forEach(dropdown => {
+                if (!dropdown) return;
+                
+                // Save current selection
+                const selectedValue = dropdown.value;
+                dropdown.innerHTML = '<option value="">Select Doctor</option>';
+                
+                doctors.forEach(doctor => {
+                    const option = document.createElement('option');
+                    option.value = doctor.id;
+                    option.textContent = `Dr. ${doctor.name} (${doctor.specialization})`;
+                    dropdown.appendChild(option);
+                });
+                
+                // Restore selection if possible
+                if (selectedValue && doctors.some(d => d.id === selectedValue)) {
+                    dropdown.value = selectedValue;
+                }
+            });
+        }
+
+        function generateId() {
+            return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
+                const r = Math.random() * 16 | 0, v = c === 'x' ? r : (r & 0x3 | 0x8);
+                return v.toString(16);
+            });
+        }
+
+        function calculateAge(dob) {
+            const birthDate = new Date(dob);
+            const today = new Date();
+            let age = today.getFullYear() - birthDate.getFullYear();
+            const monthDiff = today.getMonth() - birthDate.getMonth();
+            
+            if (monthDiff < 0 || (monthDiff === 0 && today.getDate() < birthDate.getDate())) {
+                age--;
+            }
+            
+            return age;
+        }
+
+        function formatDate(dateString) {
+            const options = { year: 'numeric', month: 'short', day: 'numeric' };
+            return new Date(dateString).toLocaleDateString('en-US', options);
+        }
+
+        function formatDateTime(dateTimeString) {
+            const options = { 
+                year: 'numeric', 
+                month: 'short', 
+                day: 'numeric',
+                hour: '2-digit',
+                minute: '2-digit'
+            };
+            return new Date(dateTimeString).toLocaleDateString('en-US', options);
+        }
+
+        function showAlert(elementId, message, type) {
+            const alertDiv = document.getElementById(elementId);
+            alertDiv.innerHTML = `
+                <div class="alert alert-${type}">${message}</div>
+            `;
+        }
+
+        function saveData() {
+            localStorage.setItem('patients', JSON.stringify(patients));
+            localStorage.setItem('doctors', JSON.stringify(doctors));
+            localStorage.setItem('appointments', JSON.stringify(appointments));
+            localStorage.setItem('records', JSON.stringify(records));
+            localStorage.setItem('notifications', JSON.stringify(notifications));
+        }
+
+        // Initialize with sample data if empty
+        function initializeSampleData() {
+            if (patients.length === 0 && doctors.length === 0 && 
+                appointments.length === 0 && records.length === 0) {
+                
+                // Sample patients
+                patients = [
+                    {
+                        id: generateId(),
+                        name: 'John Doe',
+                        gender: 'Male',
+                        dob: '1985-05-15',
+                        address: '123 Main St, Anytown',
+                        phone: '5551234567',
+                        email: 'john.doe@example.com',
+                        bloodType: 'A+'
+                    },
+                    {
+                        id: generateId(),
+                        name: 'Jane Smith',
+                        gender: 'Female',
+                        dob: '1990-08-22',
+                        address: '456 Oak Ave, Somewhere',
+                        phone: '5559876543',
+                        email: 'jane.smith@example.com',
+                        bloodType: 'O-'
+                    }
+                ];
+                
+                // Sample doctors
+                doctors = [
+                    {
+                        id: generateId(),
+                        name: 'Sarah Johnson',
+                        specialization: 'Cardiology',
+                        gender: 'Female',
+                        phone: '5551112233',
+                        email: 's.johnson@hospital.com',
+                        schedule: 'Mon-Fri 9AM-5PM',
+                        availability: {
+                            monday: { available: true, timeSlots: timeSlots.map(time => ({ time, booked: false })) },
+                            tuesday: { available: true, timeSlots: timeSlots.map(time => ({ time, booked: false })) },
+                            wednesday: { available: false, timeSlots: [] },
+                            thursday: { available: true, timeSlots: timeSlots.map(time => ({ time, booked: false })) },
+                            friday: { available: true, timeSlots: timeSlots.map(time => ({ time, booked: false })) },
+                            saturday: { available: false, timeSlots: [] },
+                            sunday: { available: false, timeSlots: [] }
+                        }
+                    },
+                    {
+                        id: generateId(),
+                        name: 'Michael Chen',
+                        specialization: 'Neurology',
+                        gender: 'Male',
+                        phone: '5554445566',
+                        email: 'm.chen@hospital.com',
+                        schedule: 'Mon-Wed-Fri 10AM-4PM',
+                        availability: {
+                            monday: { available: true, timeSlots: timeSlots.slice(2, 14).map(time => ({ time, booked: false })) },
+                            tuesday: { available: false, timeSlots: [] },
+                            wednesday: { available: true, timeSlots: timeSlots.slice(2, 14).map(time => ({ time, booked: false })) },
+                            thursday: { available: false, timeSlots: [] },
+                            friday: { available: true, timeSlots: timeSlots.slice(2, 14).map(time => ({ time, booked: false })) },
+                            saturday: { available: false, timeSlots: [] },
+                            sunday: { available: false, timeSlots: [] }
+                        }
+                    }
+                ];
+                
+                // Sample appointments
+                const today = new Date().toISOString().split('T')[0];
+                appointments = [
+                    {
+                        id: generateId(),
+                        patientId: patients[0].id,
+                        doctorId: doctors[0].id,
+                        date: today,
+                        time: '10:00',
+                        reason: 'Annual checkup',
+                        status: 'Scheduled'
+                    },
+                    {
+                        id: generateId(),
+                        patientId: patients[1].id,
+                        doctorId: doctors[1].id,
+                        date: today,
+                        time: '11:30',
+                        reason: 'Headache consultation',
+                        status: 'Scheduled'
+                    }
+                ];
+                
+                // Sample records
+                records = [
+                    {
+                        id: generateId(),
+                        patientId: patients[0].id,
+                        doctorId: doctors[0].id,
+                        date: '2023-01-15',
+                        diagnosis: 'Hypertension',
+                        treatment: 'Prescribed medication and recommended lifestyle changes',
+                        medication: 'Lisinopril 10mg daily',
+                        notes: 'Patient to follow up in 3 months'
+                    }
+                ];
+                
+                // Sample notifications
+                notifications = [
+                    {
+                        id: generateId(),
+                        type: 'new',
+                        message: 'New patient John Doe registered',
+                        timestamp: new Date(Date.now() - 86400000).toISOString(),
+                        data: { patientId: patients[0].id }
+                    },
+                    {
+                        id: generateId(),
+                        type: 'new',
+                        message: 'New appointment scheduled for Jane Smith',
+                        timestamp: new Date(Date.now() - 3600000).toISOString(),
+                        data: { appointmentId: appointments[1].id }
+                    }
+                ];
+                
+                saveData();
+            }
+        }
+
+        // Call initializeSampleData on first load
+        initializeSampleData();
+    </script>
+</body>
+</html>
